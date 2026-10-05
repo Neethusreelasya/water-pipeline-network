@@ -1,0 +1,12 @@
+# Compiled classes
+webapp/WEB-INF/classes/
+
+# Libraries (document these in README instead)
+webapp/WEB-INF/lib/*.jar
+
+# IDE
+.vscode/
+
+# OS files
+Thumbs.db
+.DS_Store
