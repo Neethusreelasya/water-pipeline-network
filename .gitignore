@@ -10,3 +10,8 @@ webapp/WEB-INF/lib/*.jar
 # OS files
 Thumbs.db
 .DS_Store
+
+# Node.js dependencies and local configuration
+node_modules/
+.env
+npm-debug.log*

@@ -1,0 +1,10 @@
+const loginForm=document.querySelector('#login-form');
+const registerForm=document.querySelector('#register-form');
+const message=document.querySelector('#auth-message');
+function showMessage(text,type='error'){message.textContent=text;message.className=`auth-message ${type}`;}
+function setMode(mode){const isLogin=mode==='login';loginForm.classList.toggle('hidden',!isLogin);registerForm.classList.toggle('hidden',isLogin);document.querySelectorAll('.auth-tab').forEach(tab=>tab.classList.toggle('active',tab.dataset.mode===mode));document.querySelector('#form-eyebrow').textContent=isLogin?'WELCOME BACK':'JOIN YOUR COMMUNITY';document.querySelector('#form-title').textContent=isLogin?'Sign in to AquaGrid':'Create your account';document.querySelector('#form-subtitle').textContent=isLogin?'Use your account to open the city network workspace.':'Create a resident account to report leaks and track repairs.';message.textContent='';message.className='auth-message';}
+document.querySelectorAll('.auth-tab').forEach(tab=>tab.addEventListener('click',()=>setMode(tab.dataset.mode)));
+async function submitAuth(form,url){const button=form.querySelector('button[type=submit]');button.disabled=true;button.classList.add('loading');showMessage('Connecting securely…','info');try{const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(Object.fromEntries(new FormData(form)))});const data=await response.json();if(!response.ok)throw new Error(data.error||'Sign in failed.');window.location.assign('/index.html');}catch(error){showMessage(error.message)}finally{button.disabled=false;button.classList.remove('loading');}}
+loginForm.addEventListener('submit',event=>{event.preventDefault();submitAuth(loginForm,'/api/auth/login')});
+registerForm.addEventListener('submit',event=>{event.preventDefault();submitAuth(registerForm,'/api/auth/register')});
+fetch('/api/auth/me',{credentials:'same-origin'}).then(response=>response.json()).then(data=>{if(data.user)window.location.replace('/index.html')}).catch(()=>showMessage('Could not reach AquaGrid. Make sure the server is running.'));
